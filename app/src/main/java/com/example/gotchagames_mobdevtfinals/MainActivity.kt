@@ -12,36 +12,35 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gotchagames_mobdevtfinals.ui.theme.GotchaGames_MOBDEVTFinalsTheme
+import androidx.activity.viewModels
+
+
 
 class MainActivity : ComponentActivity() {
+    private val viewModel: GotchaGamesViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
-            GotchaGames_MOBDEVTFinalsTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+            GotchaGamesScreen(viewModel)
         }
+        viewModel.fetchGenres("5dcb58160817413e9e3a0d1be2402e55")
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    GotchaGames_MOBDEVTFinalsTheme {
-        Greeting("Android")
-    }
-}
+//
+//@Composable
+//fun Greeting(name: String, modifier: Modifier = Modifier) {
+//    Text(
+//        text = "Hello $name!",
+//        modifier = modifier
+//    )
+//}
+//
+//@Preview(showBackground = true)
+//@Composable
+//fun GreetingPreview() {
+//    GotchaGames_MOBDEVTFinalsTheme {
+//        Greeting("Android")
+//    }
+//}
