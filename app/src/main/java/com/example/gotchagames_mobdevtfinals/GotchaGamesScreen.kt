@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -23,7 +25,7 @@ fun GotchaGamesScreen(viewModel: GotchaGamesViewModel = viewModel()) {
     var selectedGenre by remember { mutableStateOf<Genre?>(null) }
     val apiKey = "5dcb58160817413e9e3a0d1be2402e55"
 
-    // Debugging: Log the genres
+    // !!For checking, check logs if games are fetched - kurt (if di nagshshow up sa screen)!!
     LaunchedEffect(genres) {
         Log.d("GotchaGamesScreen", "Genres: $genres")
     }
@@ -38,25 +40,29 @@ fun GotchaGamesScreen(viewModel: GotchaGamesViewModel = viewModel()) {
                 .padding(16.dp)
         ) {
             // Dropdown
-            ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = { expanded = !expanded },
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            Box(modifier = Modifier.fillMaxWidth()) {
                 TextField(
                     value = selectedGenre?.name ?: "Select Genre",
                     onValueChange = {},
                     readOnly = true,
                     label = { Text("Genre") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    trailingIcon = {
+                        IconButton(onClick = { expanded = !expanded }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowDropDown,
+                                contentDescription = "Dropdown Icon"
+                            )
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                ExposedDropdownMenu(
+                DropdownMenu(
                     expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Check if genres are not empty
+
                     if (genres.isNotEmpty()) {
                         genres.forEach { genre ->
                             DropdownMenuItem(
