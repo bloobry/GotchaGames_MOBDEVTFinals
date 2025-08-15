@@ -1,5 +1,6 @@
 package com.example.gotchagames_mobdevtfinals
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -10,41 +11,100 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
-
 @Composable
 fun GotchaGamesScreen(viewModel: GotchaGamesViewModel = viewModel()) {
     val genres by viewModel.genres.collectAsState()
+    val games by viewModel.games.collectAsState()
+
+    var expanded by remember { mutableStateOf(false) }
+    var selectedGenre by remember { mutableStateOf<Genre?>(null) }
+    val apiKey = "5dcb58160817413e9e3a0d1be2402e55"
+
+    // Debugging: Log the genres
+    LaunchedEffect(genres) {
+        Log.d("GotchaGamesScreen", "Genres: $genres")
+    }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Gotcha Games") }
-            )
-        }
+        topBar = { TopAppBar(title = { Text("Gotcha Games") }) }
     ) { padding ->
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp)
         ) {
-            items(genres) { genre ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
+            // Dropdown
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = { expanded = !expanded },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                TextField(
+                    value = selectedGenre?.name ?: "Select Genre",
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Genre") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
                 ) {
-                    Text(
-                        text = genre.name,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    // Check if genres are not empty
+                    if (genres.isNotEmpty()) {
+                        genres.forEach { genre ->
+                            DropdownMenuItem(
+                                text = { Text(genre.name) },
+                                onClick = {
+                                    selectedGenre = genre
+                                    expanded = false
+                                    viewModel.fetchGames(genre.id, apiKey)
+                                }
+                            )
+                        }
+                    } else {
+                        DropdownMenuItem(
+                            text = { Text("No genres available") },
+                            onClick = {}
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Games list
+            LazyColumn {
+                items(games) { game ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                    ) {
+                        Column(modifier = Modifier.padding(8.dp)) {
+                            Text(
+                                text = game.name,
+                                fontSize = 18.sp
+                            )
+                            game.background_image?.let { imageUrl ->
+                                AsyncImage(
+                                    model = imageUrl,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(180.dp)
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 }
-
