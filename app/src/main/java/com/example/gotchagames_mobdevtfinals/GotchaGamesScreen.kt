@@ -23,6 +23,10 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.text.style.TextAlign
 import com.example.gotchagames_mobdevtfinals.ui.theme.PressStart2P
 import com.example.gotchagames_mobdevtfinals.ui.theme.Calistoga
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Surface
+import com.google.accompanist.flowlayout.FlowMainAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -198,7 +202,7 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-//                Text(text = "ID: ${gameDetail.id}", fontSize = 14.sp)
+//              TITLE
                 Text(text = gameDetail.name,
                     fontSize = 28.sp,
                     fontFamily = Calistoga,
@@ -206,7 +210,31 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center)
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(2.dp))
+
+//              GENRES
+                FlowRow(
+                    mainAxisSpacing = 8.dp,
+                    crossAxisSpacing = 2.dp,
+                    modifier = Modifier.padding(4.dp)
+                        .fillMaxWidth(),
+                    mainAxisAlignment = FlowMainAxisAlignment.Center
+                ) {
+                    gameDetail.genres?.forEach{ genre ->
+                        Surface(
+                            shape = RoundedCornerShape(50),
+                            color = Color(0xFFE23BA5),
+                            modifier = Modifier.padding(8.dp)
+                                .width(120.dp)
+                        ) {
+                            Text(text = genre.name,
+                                color = Color.White,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp))
+                        }
+                    }
+                }
+
                 Text(text = "Released: ${gameDetail.released ?: "N/A"}")
                 Text(text = "Rating: ${gameDetail.rating ?: 0f}")
 
