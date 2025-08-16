@@ -139,94 +139,104 @@ fun GotchaGamesScreen(viewModel: GotchaGamesViewModel = viewModel()) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("GOTCHA GAMES", fontFamily = PressStart2P) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color(0xFF0E0728)
+    ){
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = {
+                TopAppBar(
+                    title = { Text("GOTCHA GAMES", fontFamily = PressStart2P) },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent,  // background transparent
+                        scrolledContainerColor = Color.Transparent, // stays transparent when scrolling
+                ))
+            }
+        ) { padding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Top
+            ) {
+                gameDetail.background_image?.let { imageUrl ->
+                    AsyncImage(
+                        model = imageUrl,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                    )
                 }
-            )
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Top
-        ) {
-            gameDetail.background_image?.let { imageUrl ->
-                AsyncImage(
-                    model = imageUrl,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                )
-            }
 
-            // Additional image (optional if wala na oras for the slideshow)
-            gameDetail.background_image_additional?.let { url ->
-                AsyncImage(
-                    model = url,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                )
+                // Additional image (optional if wala na oras for the slideshow)
+                gameDetail.background_image_additional?.let { url ->
+                    AsyncImage(
+                        model = url,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
+
                 Spacer(modifier = Modifier.height(16.dp))
-            }
 
+                Text(text = "ID: ${gameDetail.id}", fontSize = 14.sp)
+                Text(text = "Name: ${gameDetail.name}", fontSize = 20.sp)
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            Text(text = "ID: ${gameDetail.id}", fontSize = 14.sp)
-            Text(text = "Name: ${gameDetail.name}", fontSize = 20.sp)
+                Text(text = "Released: ${gameDetail.released ?: "N/A"}")
+                Text(text = "Rating: ${gameDetail.rating ?: 0f}")
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            Text(text = "Released: ${gameDetail.released ?: "N/A"}")
-            Text(text = "Rating: ${gameDetail.rating ?: 0f}")
+                gameDetail.description?.let {
+                    Text(text = it)
+                }
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            gameDetail.description?.let {
-                Text(text = it)
-            }
+                gameDetail.website?.let {
+                    Text(text = "Website: $it", color = Color.Blue)
+                }
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            gameDetail.website?.let {
-                Text(text = "Website: $it", color = Color.Blue)
-            }
+                Text("Genres:")
+                gameDetail.genres?.forEach { genre ->
+                    Text(text = "- ${genre.name}")
+                }
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            Text("Genres:")
-            gameDetail.genres?.forEach { genre ->
-                Text(text = "- ${genre.name}")
-            }
+                Text("Platforms:")
+                gameDetail.platforms?.forEach { wrapper ->
+                    Text(text = "- ${wrapper.platform.name}")
+                }
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            Text("Platforms:")
-            gameDetail.platforms?.forEach { wrapper ->
-                Text(text = "- ${wrapper.platform.name}")
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text("Ratings:")
-            gameDetail.ratings?.forEach { rating ->
-                Text(text = "${rating.title}: ${rating.percent}%")
+                Text("Ratings:")
+                gameDetail.ratings?.forEach { rating ->
+                    Text(text = "${rating.title}: ${rating.percent}%")
+                }
             }
         }
     }
+
 }
