@@ -15,6 +15,9 @@ class GotchaGamesViewModel : ViewModel() {
     private val _games = MutableStateFlow<List<Game>>(emptyList())
     val games: StateFlow<List<Game>> = _games
 
+    private val _selectedGame = MutableStateFlow<GameDetail?>(null)
+    val selectedGame: StateFlow<GameDetail?> = _selectedGame
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -28,10 +31,10 @@ class GotchaGamesViewModel : ViewModel() {
             try {
                 val response = RetrofitInstance.api.getGenres(apiKey)
                 _genres.value = response.results
-                Log.d("GotchaGamesViewModel", "Fetched genres: ${response.results}") // Log fetched genres
+                Log.d("GotchaGamesViewModel", "Fetched genres: ${response.results}")
             } catch (e: Exception) {
                 _errorMessage.value = e.message ?: "Unknown error occurred"
-                Log.e("GotchaGamesViewModel", "Error fetching genres: ${e.message}") // Log error
+                Log.e("GotchaGamesViewModel", "Error fetching genres: ${e.message}")
             } finally {
                 _isLoading.value = false
             }
@@ -45,11 +48,34 @@ class GotchaGamesViewModel : ViewModel() {
             try {
                 val response = RetrofitInstance.api.getGames(genreId, apiKey)
                 _games.value = response.results
+                Log.d("GotchaGamesViewModel", "Fetched games: ${response.results}")
             } catch (e: Exception) {
                 _errorMessage.value = e.message ?: "Unknown error occurred"
+                Log.e("GotchaGamesViewModel", "Error fetching games: ${e.message}")
             } finally {
                 _isLoading.value = false
             }
         }
+    }
+
+    fun fetchGameDetails(gameId: Int, apiKey: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+            try {
+                val response = RetrofitInstance.api.getGameDetails(gameId, apiKey)
+                _selectedGame.value = response
+                Log.d("GotchaGamesViewModel", "Fetched game details: $response")
+            } catch (e: Exception) {
+                _errorMessage.value = e.message ?: "Unknown error occurred"
+                Log.e("GotchaGamesViewModel", "Error fetching game details: ${e.message}")
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun clearSelectedGame() {
+        _selectedGame.value = null
     }
 }

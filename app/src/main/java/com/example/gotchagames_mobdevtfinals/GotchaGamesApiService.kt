@@ -1,8 +1,8 @@
 package com.example.gotchagames_mobdevtfinals
 
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
-
 
 interface GotchaGamesApiService {
     @GET("genres")
@@ -15,4 +15,10 @@ interface GotchaGamesApiService {
         @Query("genres") genreId: Int,
         @Query("key") apiKey: String
     ): GamesResponse
+
+    @GET("games/{id}")
+    suspend fun getGameDetails(
+        @Path("id") gameId: Int,
+        @Query("key") apiKey: String
+    ): GameDetail
 }

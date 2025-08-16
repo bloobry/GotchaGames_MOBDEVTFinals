@@ -1,15 +1,20 @@
 package com.example.gotchagames_mobdevtfinals
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -20,96 +25,205 @@ import coil.compose.AsyncImage
 fun GotchaGamesScreen(viewModel: GotchaGamesViewModel = viewModel()) {
     val genres by viewModel.genres.collectAsState()
     val games by viewModel.games.collectAsState()
+    val selectedGame by viewModel.selectedGame.collectAsState()
 
     var expanded by remember { mutableStateOf(false) }
     var selectedGenre by remember { mutableStateOf<Genre?>(null) }
     val apiKey = "5dcb58160817413e9e3a0d1be2402e55"
 
-    // !!For checking, check logs if games are fetched - kurt (if di nagshshow up sa screen)!!
+    // !! For checking, check logs if games are fetched - kurt !!
     LaunchedEffect(genres) {
         Log.d("GotchaGamesScreen", "Genres: $genres")
     }
 
+    if (selectedGame == null) {
+        // Main screen
+        Scaffold(
+            topBar = { TopAppBar(title = { Text("Gotcha Games") }) }
+        ) { padding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(16.dp)
+            ) {
+                // Dropdown
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    TextField(
+                        value = selectedGenre?.name ?: "Select Genre",
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Genre") },
+                        trailingIcon = {
+                            IconButton(onClick = { expanded = !expanded }) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowDropDown,
+                                    contentDescription = "Dropdown Icon"
+                                )
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 300.dp)
+                    ) {
+                        if (genres.isNotEmpty()) {
+                            genres.forEach { genre ->
+                                DropdownMenuItem(
+                                    text = { Text(genre.name) },
+                                    onClick = {
+                                        selectedGenre = genre
+                                        expanded = false
+                                        viewModel.fetchGames(genre.id, apiKey)
+                                    }
+                                )
+                            }
+                        } else {
+                            DropdownMenuItem(
+                                text = { Text("No genres available") },
+                                onClick = {}
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Games list
+                LazyColumn {
+                    items(games) { game ->
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                                .clickable {
+                                    viewModel.fetchGameDetails(game.id, apiKey)
+                                }
+                        ) {
+                            Column(modifier = Modifier.padding(8.dp)) {
+                                Text(
+                                    text = game.name,
+                                    fontSize = 18.sp
+                                )
+                                game.background_image?.let { imageUrl ->
+                                    AsyncImage(
+                                        model = imageUrl,
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(180.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        // Details Screen
+        GameDetailsScreen(
+            gameDetail = selectedGame!!,
+            onBack = { viewModel.clearSelectedGame() }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Gotcha Games") }) }
+        topBar = {
+            TopAppBar(
+                title = { Text("Gotcha Games")  },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                }
+            )
+        }
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Top
         ) {
-            // Dropdown
-            Box(modifier = Modifier.fillMaxWidth()) {
-                TextField(
-                    value = selectedGenre?.name ?: "Select Genre",
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("Genre") },
-                    trailingIcon = {
-                        IconButton(onClick = { expanded = !expanded }) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowDropDown,
-                                contentDescription = "Dropdown Icon"
-                            )
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
+            gameDetail.background_image?.let { imageUrl ->
+                AsyncImage(
+                    model = imageUrl,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
                 )
-
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-
-                    if (genres.isNotEmpty()) {
-                        genres.forEach { genre ->
-                            DropdownMenuItem(
-                                text = { Text(genre.name) },
-                                onClick = {
-                                    selectedGenre = genre
-                                    expanded = false
-                                    viewModel.fetchGames(genre.id, apiKey)
-                                }
-                            )
-                        }
-                    } else {
-                        DropdownMenuItem(
-                            text = { Text("No genres available") },
-                            onClick = {}
-                        )
-                    }
-                }
             }
+
+            // Additional image (optional if wala na oras for the slideshow)
+            gameDetail.background_image_additional?.let { url ->
+                AsyncImage(
+                    model = url,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Games list
-            LazyColumn {
-                items(games) { game ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp)
-                    ) {
-                        Column(modifier = Modifier.padding(8.dp)) {
-                            Text(
-                                text = game.name,
-                                fontSize = 18.sp
-                            )
-                            game.background_image?.let { imageUrl ->
-                                AsyncImage(
-                                    model = imageUrl,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(180.dp)
-                                )
-                            }
-                        }
-                    }
-                }
+            Text(text = "ID: ${gameDetail.id}", fontSize = 14.sp)
+            Text(text = "Name: ${gameDetail.name}", fontSize = 20.sp)
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(text = "Released: ${gameDetail.released ?: "N/A"}")
+            Text(text = "Rating: ${gameDetail.rating ?: 0f}")
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            gameDetail.description?.let {
+                Text(text = it)
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            gameDetail.website?.let {
+                Text(text = "Website: $it", color = Color.Blue)
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text("Genres:")
+            gameDetail.genres?.forEach { genre ->
+                Text(text = "- ${genre.name}")
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text("Platforms:")
+            gameDetail.platforms?.forEach { wrapper ->
+                Text(text = "- ${wrapper.platform.name}")
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text("Ratings:")
+            gameDetail.ratings?.forEach { rating ->
+                Text(text = "${rating.title}: ${rating.percent}%")
             }
         }
     }
