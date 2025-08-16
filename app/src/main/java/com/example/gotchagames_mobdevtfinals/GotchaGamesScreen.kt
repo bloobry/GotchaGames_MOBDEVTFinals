@@ -235,13 +235,20 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
                     }
                 }
 
-                Text(text = "Released: ${gameDetail.released ?: "N/A"}")
-                Text(text = "Rating: ${gameDetail.rating ?: 0f}")
+//                Text(text = "Released: ${gameDetail.released ?: "N/A"}")
+//                Text(text = "Rating: ${gameDetail.rating ?: 0f}")
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 gameDetail.description?.let {
-                    Text(text = it)
+                    val cleanDesc = it
+                        .replace(Regex("&#39;"), "'")
+                        .replace(Regex("<br\\s*/?>"), "\n\n")
+                        .replace(Regex("<p>"), "")
+                        .replace(Regex("</p>"), "")
+                    Text(text = cleanDesc,
+                        color = Color.White,
+                        modifier = Modifier.padding(16.dp))
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
