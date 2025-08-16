@@ -20,7 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import androidx.compose.material3.Text
+import androidx.compose.ui.text.style.TextAlign
 import com.example.gotchagames_mobdevtfinals.ui.theme.PressStart2P
+import com.example.gotchagames_mobdevtfinals.ui.theme.Calistoga
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -147,12 +149,13 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
             containerColor = Color.Transparent,
             topBar = {
                 TopAppBar(
-                    title = { Text("GOTCHA GAMES", fontFamily = PressStart2P) },
+                    title = { Text("GOTCHA GAMES", fontFamily = PressStart2P, color = Color.White) },
                     navigationIcon = {
                         IconButton(onClick = onBack) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back"
+                                contentDescription = "Back",
+                                tint = Color.White
                             )
                         }
                     },
@@ -189,17 +192,21 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
                             .fillMaxWidth()
                             .height(200.dp)
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
 
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(text = "ID: ${gameDetail.id}", fontSize = 14.sp)
-                Text(text = "Name: ${gameDetail.name}", fontSize = 20.sp)
-
                 Spacer(modifier = Modifier.height(8.dp))
 
+//                Text(text = "ID: ${gameDetail.id}", fontSize = 14.sp)
+                Text(text = gameDetail.name,
+                    fontSize = 28.sp,
+                    fontFamily = Calistoga,
+                    color = Color.White,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center)
+
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(text = "Released: ${gameDetail.released ?: "N/A"}")
                 Text(text = "Rating: ${gameDetail.rating ?: 0f}")
 

@@ -8,3 +8,7 @@ import com.example.gotchagames_mobdevtfinals.R
 val PressStart2P = FontFamily(
     Font(R.font.pressstart2p_regular, FontWeight.Normal),
 )
+
+val Calistoga = FontFamily(
+    Font(R.font.calistoga_regular, FontWeight.Normal),
+)
