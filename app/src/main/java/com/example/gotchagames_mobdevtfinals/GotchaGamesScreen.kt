@@ -19,6 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import androidx.compose.material3.Text
+import com.example.gotchagames_mobdevtfinals.ui.theme.PressStart2P
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -140,7 +142,7 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Gotcha Games")  },
+                title = { Text("GOTCHA GAMES", fontFamily = PressStart2P) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
