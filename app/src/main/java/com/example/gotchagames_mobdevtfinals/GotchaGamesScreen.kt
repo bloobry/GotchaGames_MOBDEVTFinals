@@ -27,6 +27,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,15 +50,29 @@ fun GotchaGamesScreen(viewModel: GotchaGamesViewModel = viewModel()) {
 
     if (selectedGame == null) {
         // Main screen
-        Scaffold(
-            topBar = { TopAppBar(title = { Text("Gotcha Games") }) }
-        ) { padding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .padding(16.dp)
-            ) {
+        Surface(
+            color = Color(0xFF0E0728), // bg color
+            modifier = Modifier.fillMaxSize()
+        ) {
+
+            Scaffold(
+                containerColor = Color.Transparent, //transparent
+                topBar = {
+                    TopAppBar(
+                        title = { Text("GOTCHA GAMES",  fontFamily = PressStart2P, color = Color.White) },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = Color.Transparent,
+                            scrolledContainerColor = Color.Transparent
+                        )
+                    )
+                }
+            ) { padding ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                        .padding(16.dp)
+                ) {
                 // Dropdown
                 Box(modifier = Modifier.fillMaxWidth()) {
                     TextField(
@@ -102,32 +120,49 @@ fun GotchaGamesScreen(viewModel: GotchaGamesViewModel = viewModel()) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+
                 // Games list
-                LazyColumn {
-                    items(games) { game ->
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp)
-                                .clickable {
-                                    viewModel.fetchGameDetails(game.id, apiKey)
-                                }
-                        ) {
-                            Column(modifier = Modifier.padding(8.dp)) {
-                                Text(
-                                    text = game.name,
-                                    fontSize = 18.sp
-                                )
-                                game.background_image?.let { imageUrl ->
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        items(games) { game ->
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(90.dp)
+                                    .clickable { viewModel.fetchGameDetails(game.id, apiKey) },
+                                shape = RoundedCornerShape(16.dp),
+                                colors = CardDefaults.cardColors(containerColor = Color(0xFF0E0728))
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
                                     AsyncImage(
-                                        model = imageUrl,
+                                        model = game.background_image,
                                         contentDescription = null,
                                         modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(180.dp)
+                                            .size(70.dp)
+                                            .clip(RoundedCornerShape(12.dp)),
+                                        contentScale = ContentScale.Crop
+                                    )
+
+                                    Spacer(modifier = Modifier.width(12.dp))
+
+                                    Text(
+                                        text = game.name,
+                                        color = Color.White,
+                                        fontFamily = PressStart2P,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        fontSize = 14.sp
                                     )
                                 }
                             }
+                            Divider(                                   // <- thin line between cards
+                                color = Color(0xFF7A7A86),
+                                thickness = 1.dp
+                            )
                         }
                     }
                 }
@@ -140,6 +175,7 @@ fun GotchaGamesScreen(viewModel: GotchaGamesViewModel = viewModel()) {
             onBack = { viewModel.clearSelectedGame() }
         )
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
