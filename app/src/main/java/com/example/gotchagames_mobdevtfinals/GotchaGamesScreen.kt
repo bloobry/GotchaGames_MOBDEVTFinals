@@ -64,14 +64,26 @@ fun GotchaGamesScreen(viewModel: GotchaGamesViewModel = viewModel()) {
                 containerColor = Color.Transparent, //transparent
                 topBar = {
                     TopAppBar(
-                        title = { Text("GOTCHA GAMES",  fontFamily = PressStart2P, color = Color.White) },
+                        title = {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    "GOTCHA GAMES",
+                                    fontFamily = PressStart2P,
+                                    color = Color.White
+                                )
+                            }
+                        },
                         colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = Color.Transparent,
                             scrolledContainerColor = Color.Transparent
                         )
                     )
                 }
-            ) { padding ->
+
+                    ) { padding ->
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -147,21 +159,42 @@ fun GotchaGamesScreen(viewModel: GotchaGamesViewModel = viewModel()) {
                                         model = game.background_image,
                                         contentDescription = null,
                                         modifier = Modifier
-                                            .size(70.dp)
+                                            .width(100.dp)
+                                            .height(70.dp)
                                             .clip(RoundedCornerShape(12.dp)),
                                         contentScale = ContentScale.Crop
                                     )
 
                                     Spacer(modifier = Modifier.width(12.dp))
 
-                                    Text(
-                                        text = game.name,
-                                        color = Color.White,
-                                        fontFamily = PressStart2P,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        fontSize = 14.sp
-                                    )
+
+                                    Column {
+                                        Text(
+                                            text = game.name,
+                                            color = Color.White,
+                                            fontFamily = PressStart2P,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            fontSize = 14.sp
+                                        )
+
+                                        Spacer(modifier = Modifier.height(12.dp))
+
+                                        // gotcha label under name of game
+                                        Surface(
+                                            shape = RoundedCornerShape(50),
+                                            color = Color(0xFF5CC1F0)
+                                        ) {
+                                            Text(
+                                                text = "GOTCHA",
+                                                color = Color.White,
+                                                fontFamily = PressStart2P,
+                                                fontSize = 10.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
+                                            )
+                                        }
+                                    }
                                 }
                             }
                             Divider(                                   // <- thin line between cards
