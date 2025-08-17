@@ -31,6 +31,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import android.content.Intent
+import android.net.Uri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -276,6 +281,7 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
+//              DESCRIPTION
                 gameDetail.description?.let {
                     val cleanDesc = it
                         .replace(Regex("&#39;"), "'")
@@ -289,8 +295,27 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
+//              WEBSITE
+                val context = LocalContext.current
+                val url = gameDetail.website
+
                 gameDetail.website?.let {
-                    Text(text = "Website: $it", color = Color.Blue)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ){
+                        IconButton(onClick = {
+                            val intent= Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                            context.startActivity(intent)
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Language,
+                                contentDescription = "Open Website",
+                                tint = Color.White
+                            )
+                        }
+                    }
+
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
