@@ -36,10 +36,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.DpOffset
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GotchaGamesScreen(viewModel: GotchaGamesViewModel = viewModel()) {
+
     val genres by viewModel.genres.collectAsState()
     val games by viewModel.games.collectAsState()
     val selectedGame by viewModel.selectedGame.collectAsState()
@@ -61,7 +64,7 @@ fun GotchaGamesScreen(viewModel: GotchaGamesViewModel = viewModel()) {
         ) {
 
             Scaffold(
-                containerColor = Color.Transparent, //transparent
+                containerColor = Color.Transparent, // transparent
                 topBar = {
                     TopAppBar(
                         title = {
@@ -82,58 +85,68 @@ fun GotchaGamesScreen(viewModel: GotchaGamesViewModel = viewModel()) {
                         )
                     )
                 }
-
-                    ) { padding ->
+            ) { padding ->
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding)
                         .padding(16.dp)
                 ) {
-                // Dropdown
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    TextField(
-                        value = selectedGenre?.name ?: "Select Genre",
-                        onValueChange = {},
-                        readOnly = true,
-                        label = { Text("Genre") },
-                        trailingIcon = {
-                            IconButton(onClick = { expanded = !expanded }) {
-                                Icon(
-                                    imageVector = Icons.Default.ArrowDropDown,
-                                    contentDescription = "Dropdown Icon"
-                                )
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(max = 300.dp)
-                    ) {
-                        if (genres.isNotEmpty()) {
-                            genres.forEach { genre ->
-                                DropdownMenuItem(
-                                    text = { Text(genre.name) },
-                                    onClick = {
-                                        selectedGenre = genre
-                                        expanded = false
-                                        viewModel.fetchGames(genre.id, apiKey)
+                    // Dropdown
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            TextField(
+                                value = selectedGenre?.name ?: "Select Genre",
+                                onValueChange = {},
+                                readOnly = true,
+                                label = { Text("Genre") },
+                                trailingIcon = {
+                                    IconButton(onClick = { expanded = !expanded }) {
+                                        Icon(
+                                            imageVector = Icons.Default.ArrowDropDown,
+                                            contentDescription = "Dropdown Icon"
+                                        )
                                     }
-                                )
-                            }
-                        } else {
-                            DropdownMenuItem(
-                                text = { Text("No genres available") },
-                                onClick = {}
+                                },
+                                modifier = Modifier.fillMaxWidth()
                             )
+
+
+                            DropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false },
+                                offset = DpOffset(
+                                    x = 0.dp,
+                                    y = 0.dp
+                                ),
+                                modifier = Modifier
+                                    .width(380.dp)
+                                    .align(Alignment.CenterHorizontally)
+                                    .heightIn(max = 300.dp)
+                            ) {
+                                if (genres.isNotEmpty()) {
+                                    genres.forEach { genre ->
+                                        DropdownMenuItem(
+                                            text = { Text(genre.name) },
+                                            onClick = {
+                                                selectedGenre = genre
+                                                expanded = false
+                                                viewModel.fetchGames(genre.id, apiKey)
+                                            }
+                                        )
+                                    }
+                                } else {
+                                    DropdownMenuItem(
+                                        text = { Text("No genres available") },
+                                        onClick = {}
+                                    )
+                                }
+                            }
                         }
                     }
-                }
+
+
+
 
                 Spacer(modifier = Modifier.height(16.dp))
 
