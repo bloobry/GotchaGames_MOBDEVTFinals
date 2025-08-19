@@ -36,6 +36,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.background
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.DpOffset
 
@@ -336,7 +339,7 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
                         .replace(Regex("</p>"), "")
                     Text(text = cleanDesc,
                         color = Color.White,
-                        modifier = Modifier.padding(16.dp))
+                        modifier = Modifier.padding(12.dp))
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -344,31 +347,68 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
 //              WEBSITE
                 val context = LocalContext.current
                 val url = gameDetail.website
+                val intent= Intent(Intent.ACTION_VIEW, Uri.parse(url))
 
                 gameDetail.website?.let {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(top = 0.dp, start = 10.dp, end = 10.dp, bottom = 5.dp),
                         horizontalArrangement = Arrangement.End
                     ){
-                        IconButton(onClick = {
-                            val intent= Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                            context.startActivity(intent)
-                        }) {
-                            Icon(
-                                imageVector = Icons.Default.Language,
-                                contentDescription = "Open Website",
-                                tint = Color.White
-                            )
-                        }
+                        Icon(
+                            imageVector = Icons.Default.Language,
+                            contentDescription = "Open Website",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                                .clickable{
+                                    context.startActivity(intent)
+                                }
+                        )
                     }
 
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+//                Spacer(modifier = Modifier.height(2.dp))
 
-                Text("Genres:")
-                gameDetail.genres?.forEach { genre ->
-                    Text(text = "- ${genre.name}")
+//              Row of Info (Rate, Platforms, Date)
+                val section =
+                Surface(
+                    shape = RoundedCornerShape(20),
+                    color = Color(0xFF0D0B4A),
+                    modifier = Modifier.padding(top = 0.dp, start = 10.dp, end = 10.dp).fillMaxWidth().height(80.dp)
+                ){
+                    Row(modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                        .padding(20.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    )
+                    {
+                        Column(modifier = Modifier.width(50.dp)
+//                            .background(Color.White)
+                            .fillMaxHeight(),
+                            verticalArrangement = Arrangement.Center)
+                        {
+                            Text(text = "Rating",
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                fontSize = 14.sp)
+
+                            Text(text = gameDetail.rating.toString(),
+                                color = Color.White,
+                                fontSize = 22.sp)
+                        }
+
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = "Star",
+                            tint = Color(0xFFFFCC00),
+                            modifier = Modifier.size(42.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(10.dp))
+
+                        Column(modifier = Modifier.height(30.dp).width(0.5.dp)
+                            .background(Color.White)){}
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
