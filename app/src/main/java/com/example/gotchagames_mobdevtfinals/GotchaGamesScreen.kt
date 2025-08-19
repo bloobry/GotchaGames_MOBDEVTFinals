@@ -371,7 +371,6 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
 //                Spacer(modifier = Modifier.height(2.dp))
 
 //              Row of Info (Rate, Platforms, Date)
-                val section =
                 Surface(
                     shape = RoundedCornerShape(20),
                     color = Color(0xFF0D0B4A),
@@ -385,7 +384,8 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
                         Column(modifier = Modifier.width(50.dp)
 //                            .background(Color.White)
                             .fillMaxHeight(),
-                            verticalArrangement = Arrangement.Center)
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally)
                         {
                             Text(text = "Rating",
                                 fontWeight = FontWeight.Bold,
@@ -406,10 +406,68 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
 
                         Spacer(modifier = Modifier.width(10.dp))
 
-                        Column(modifier = Modifier.height(30.dp).width(0.5.dp)
+//                      Divider
+                        Column(modifier = Modifier.height(30.dp).width(0.8.dp)
                             .background(Color.White)){}
+
+                        Spacer(modifier = Modifier.width(10.dp))
+
+//                      Platforms
+                        Column(modifier = Modifier.width(140.dp)
+//                            .background(Color.White)
+                            .fillMaxHeight(),
+                            verticalArrangement = Arrangement.Center)
+                        {
+                            Text(text = "Platforms",
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                fontSize = 14.sp,
+                                modifier = Modifier.padding(bottom = 5.dp))
+
+                            FlowRow(){
+                                var i = 0
+                                    gameDetail.platforms?.forEach { platform ->
+                                        if(i  < 3){
+                                            Text(text = platform.platform.name,
+                                                color = Color.White,
+                                                fontSize = 12.sp)
+
+                                            if (i < 2){
+                                                Text(text = ", ",
+                                                    color = Color.White,
+                                                    fontSize = 12.sp)
+                                            }
+
+                                            i += 1
+                                        }
+                                    }
+                            }
+                        }
+                        Spacer(modifier = Modifier.width(10.dp))
+
+                        //Divider
+                        Column(modifier = Modifier.height(30.dp).width(0.8.dp)
+                            .background(Color.White)){}
+
+                        Spacer(modifier = Modifier.width(10.dp))
+
+                        Column(modifier = Modifier.width(50.dp)
+//                            .background(Color.White)
+                            .fillMaxHeight(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally)
+                        {
+                            Text(text = gameDetail.released.toString().take(4),
+                                color = Color.White,
+                                fontSize = 18.sp)
+
+                            Text(text = "RELEASED",
+                                color = Color.White,
+                                fontSize = 8.sp)
+                        }
                     }
                 }
+            }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -428,4 +486,4 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
         }
     }
 
-}
+
