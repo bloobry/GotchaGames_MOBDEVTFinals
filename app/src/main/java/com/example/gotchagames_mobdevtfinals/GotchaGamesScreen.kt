@@ -38,6 +38,8 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.DpOffset
@@ -374,7 +376,8 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
                 Surface(
                     shape = RoundedCornerShape(20),
                     color = Color(0xFF0D0B4A),
-                    modifier = Modifier.padding(top = 0.dp, start = 10.dp, end = 10.dp).fillMaxWidth().height(80.dp)
+                    modifier = Modifier.padding(top = 0.dp, start = 10.dp, end = 10.dp).fillMaxWidth().height(80.dp),
+                    shadowElevation = 8.dp
                 ){
                     Row(modifier = Modifier.fillMaxWidth().fillMaxHeight()
                         .padding(20.dp),
@@ -465,6 +468,53 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
                                 color = Color.White,
                                 fontSize = 8.sp)
                         }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+//              Individual Ratings
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    gameDetail.ratings?.forEach{ rating ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(start = 10.dp, end = 10.dp),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ){
+                            Text(text = rating.title.uppercase(),
+                                color = Color.White,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold)
+
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            HorizontalDivider(
+                                color = Color(0xFF348C91),
+                                thickness = 1.dp,
+                                modifier = Modifier.weight(1f)
+                                    .align(Alignment.CenterVertically)
+                            )
+
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            Text(text = rating.count.toString(),
+                                color = Color.White,
+                                fontSize = 12.sp)
+
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                            Icon(
+                                imageVector = Icons.Outlined.ThumbUp,
+                                contentDescription = "Thumbs Up",
+                                tint = Color.White,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(4.dp))
                     }
                 }
             }
