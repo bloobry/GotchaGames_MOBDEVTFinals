@@ -43,6 +43,8 @@ import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -150,10 +152,27 @@ fun GotchaGamesScreen(viewModel: GotchaGamesViewModel = viewModel()) {
                         }
                     }
 
+                    //ghost image
+                    if (!expanded && (selectedGenre == null || games.isEmpty())){
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 170.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ghost),
+                                contentDescription = "Game Image",
+                                modifier = Modifier
+                                    .size(300.dp)
+                                    .align(Alignment.CenterHorizontally),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+                    }
 
 
-
-                Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
 
                 // Games list
