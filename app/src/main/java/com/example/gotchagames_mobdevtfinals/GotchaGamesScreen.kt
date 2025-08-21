@@ -1,48 +1,43 @@
 package com.example.gotchagames_mobdevtfinals
 
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import androidx.compose.material3.Text
-import androidx.compose.ui.text.style.TextAlign
-import com.example.gotchagames_mobdevtfinals.ui.theme.PressStart2P
 import com.example.gotchagames_mobdevtfinals.ui.theme.Calistoga
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Surface
+import com.example.gotchagames_mobdevtfinals.ui.theme.PressStart2P
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import android.content.Intent
-import android.net.Uri
-import androidx.compose.foundation.background
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material.icons.outlined.ThumbUp
-import androidx.compose.ui.layout.VerticalAlignmentLine
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.unit.DpOffset
+
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
 
@@ -327,7 +322,8 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
                 FlowRow(
                     mainAxisSpacing = 8.dp,
                     crossAxisSpacing = 2.dp,
-                    modifier = Modifier.padding(4.dp)
+                    modifier = Modifier
+                        .padding(4.dp)
                         .fillMaxWidth(),
                     mainAxisAlignment = FlowMainAxisAlignment.Center
                 ) {
@@ -335,7 +331,8 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
                         Surface(
                             shape = RoundedCornerShape(50),
                             color = Color(0xFFE23BA5),
-                            modifier = Modifier.padding(8.dp)
+                            modifier = Modifier
+                                .padding(8.dp)
                                 .width(120.dp)
                         ) {
                             Text(text = genre.name,
@@ -360,7 +357,9 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
                         .replace(Regex("</p>"), "")
                     Text(text = cleanDesc,
                         color = Color.White,
-                        modifier = Modifier.padding(12.dp))
+                        modifier = Modifier.padding(12.dp).
+                            fillMaxWidth(),
+                        textAlign = TextAlign.Justify)
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -372,7 +371,8 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
 
                 gameDetail.website?.let {
                     Row(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .padding(top = 0.dp, start = 10.dp, end = 10.dp, bottom = 5.dp),
                         horizontalArrangement = Arrangement.End
                     ){
@@ -380,8 +380,9 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
                             imageVector = Icons.Default.Language,
                             contentDescription = "Open Website",
                             tint = Color.White,
-                            modifier = Modifier.size(24.dp)
-                                .clickable{
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable {
                                     context.startActivity(intent)
                                 }
                         )
@@ -395,15 +396,21 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
                 Surface(
                     shape = RoundedCornerShape(20),
                     color = Color(0xFF0D0B4A),
-                    modifier = Modifier.padding(top = 0.dp, start = 10.dp, end = 10.dp).fillMaxWidth().height(80.dp),
+                    modifier = Modifier
+                        .padding(top = 0.dp, start = 10.dp, end = 10.dp)
+                        .fillMaxWidth()
+                        .height(80.dp),
                     shadowElevation = 8.dp
                 ){
-                    Row(modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
                         .padding(20.dp),
                         verticalAlignment = Alignment.CenterVertically
                     )
                     {
-                        Column(modifier = Modifier.width(50.dp)
+                        Column(modifier = Modifier
+                            .width(50.dp)
 //                            .background(Color.White)
                             .fillMaxHeight(),
                             verticalArrangement = Arrangement.Center,
@@ -429,13 +436,16 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
                         Spacer(modifier = Modifier.width(10.dp))
 
 //                      Divider
-                        Column(modifier = Modifier.height(30.dp).width(0.8.dp)
+                        Column(modifier = Modifier
+                            .height(30.dp)
+                            .width(0.8.dp)
                             .background(Color.White)){}
 
                         Spacer(modifier = Modifier.width(10.dp))
 
 //                      Platforms
-                        Column(modifier = Modifier.width(140.dp)
+                        Column(modifier = Modifier
+                            .width(140.dp)
 //                            .background(Color.White)
                             .fillMaxHeight(),
                             verticalArrangement = Arrangement.Center)
@@ -468,12 +478,15 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
                         Spacer(modifier = Modifier.width(10.dp))
 
                         //Divider
-                        Column(modifier = Modifier.height(30.dp).width(0.8.dp)
+                        Column(modifier = Modifier
+                            .height(30.dp)
+                            .width(0.8.dp)
                             .background(Color.White)){}
 
                         Spacer(modifier = Modifier.width(10.dp))
 
-                        Column(modifier = Modifier.width(50.dp)
+                        Column(modifier = Modifier
+                            .width(50.dp)
 //                            .background(Color.White)
                             .fillMaxHeight(),
                             verticalArrangement = Arrangement.Center,
@@ -498,7 +511,8 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
                 ){
                     gameDetail.ratings?.forEach{ rating ->
                         Row(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
                                 .padding(start = 10.dp, end = 10.dp),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
@@ -513,7 +527,8 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
                             HorizontalDivider(
                                 color = Color(0xFF348C91),
                                 thickness = 1.dp,
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier
+                                    .weight(1f)
                                     .align(Alignment.CenterVertically)
                             )
 
@@ -539,18 +554,6 @@ fun GameDetailsScreen(gameDetail: GameDetail, onBack: () -> Unit) {
             }
 
                 Spacer(modifier = Modifier.height(8.dp))
-
-                Text("Platforms:")
-                gameDetail.platforms?.forEach { wrapper ->
-                    Text(text = "- ${wrapper.platform.name}")
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text("Ratings:")
-                gameDetail.ratings?.forEach { rating ->
-                    Text(text = "${rating.title}: ${rating.percent}%")
-                }
             }
         }
     }
